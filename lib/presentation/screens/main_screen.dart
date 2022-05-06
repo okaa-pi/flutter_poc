@@ -3,14 +3,14 @@ import 'package:vidis/presentation/widgets/home.dart';
 import 'package:vidis/presentation/widgets/more.dart';
 import 'package:vidis/presentation/widgets/prescriptions_list.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+class MainScreen extends StatefulWidget {
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainScreenState extends State<MainScreen> {
 
   static const List<String> _titles = <String>[
     "Home",
@@ -48,11 +48,11 @@ class _MainPageState extends State<MainPage> {
               label: 'Home'
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.business),
+              icon: Icon(Icons.list_alt),
               label: 'Prescriptions'
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
+              icon: Icon(Icons.more_horiz),
               label: 'More'
           )
         ],
