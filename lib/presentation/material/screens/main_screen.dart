@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vidis/presentation/widgets/home.dart';
-import 'package:vidis/presentation/widgets/more.dart';
-import 'package:vidis/presentation/widgets/prescriptions_list.dart';
+import 'package:vidis/presentation/material/widgets/home.dart';
+import 'package:vidis/presentation/material/widgets/more.dart';
+import 'package:vidis/presentation/material/widgets/prescriptions_list.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);

@@ -1,0 +1,1377 @@
+openapi: 3.0.1
+info:
+  title: VIDIS API Specification
+  description: Internal custom JSON API for VIDIS communications
+  termsOfService: https://www.riziv.fgov.be/SiteCollectionDocuments/conditions_utilisation_politique_confidentialite_mobapp.pdf
+  contact:
+    email: vidismobile-dev@smals.be
+  version: 1.0.0
+servers:
+  - url: https://vidis-fake-api.int.pub.paas.vasdc.be/
+
+paths:
+  /v1/openprescriptions:
+    get:
+      tags:
+        - Prescriptions
+      summary: Finds open prescriptions for a given SSIN
+      description: SSIN should be passed as parameter
+      operationId: findPrescriptions
+      parameters:
+        - name: ssin
+          in: query
+          description: SSIN of the user / mandate holder
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Prescription'
+        206:
+          description: successful operation but some data are missing
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Prescription'
+        400:
+          description: Missing SSIN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        428:
+          description: Method failure - An important part of the content has failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/openprescriptions/{ridCode}:
+    get:
+      tags:
+        - Prescriptions
+      summary: Get a prescription based on its RID code
+      description: RID Code should be passed as path parameter
+      operationId: getPrescription
+      parameters:
+        - name: ridCode
+          in: path
+          description: RID Code of the prescription to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prescription'
+        206:
+          description: successful operation but some data are missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prescription'
+        401:
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: RIDCode does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        428:
+          description: Method failure - An important part of the content has failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Prescriptions
+      summary: Delete a prescription based on its RID code
+      description: RID Code should be passed as path parameter
+      operationId: deletePrescription
+      parameters:
+        - name: ridCode
+          in: path
+          description: RID Code of the prescription to delete
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/DeletePrescriptionRequest'
+        required: true
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessfulOperation'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: RIDCode does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        428:
+          description: Method failure - An important part of the content has failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+        - Prescriptions
+      summary: Edit a prescription (only visibility for now)
+      description: RID Code should be passed as path parameter
+      operationId: editPrescription
+      parameters:
+        - name: ridCode
+          in: path
+          description: RID Code of the prescription to delete
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/EditPrescriptionRequest'
+        required: true
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessfulOperation'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: RIDCode does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        428:
+          description: Method failure - An important part of the content has failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/myopenprescriptions:
+    get:
+      tags:
+        - Prescriptions
+      summary: Finds open prescriptions based on passed SSIN; which should be the user's SSIN if used
+      description: SSIN should be exploited from the authentication token
+      operationId: findMyPrescriptions
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Prescription'
+        206:
+          description: successful operation but some data are missing
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Prescription'
+        401:
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        428:
+          description: Method failure - An important part of the content has failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /v1/openprescriptions/{ridCode}/reservation:
+    post:
+      tags:
+        - Reservations
+      summary: Make a reservation for a given prescription
+      description: RID Code should be passed as path parameter
+      operationId: createReservation
+      parameters:
+        - name: ridCode
+          in: path
+          description: RID Code of the prescription for which a reservation is created
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Details about the reservation
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+        required: true
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessfulOperation'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        428:
+          description: Method failure - An important part of the content has failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Reservations
+      summary: Delete a reservation based on its prescription RID code
+      description: RID Code should be passed as path parameter
+      operationId: deleteReservation
+      parameters:
+        - name: ridCode
+          in: path
+          description: RID Code of the reservation's linked prescription
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/DeleteReservationRequest'
+        required: true
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessfulOperation'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        428:
+          description: Method failure - An important part of the content has failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /v1/pharmacies:
+    get:
+      tags:
+        - Pharmacies
+      summary: Search for pharmacies
+      description: Search criteria should be passed are parameters
+      operationId: getPharmacies
+      parameters:
+        - name: zipCode
+          in: query
+          description: Search parameter (ZIPCode)
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: Search parameter (name of the pharmacy). Minimum 2 characters!
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page to retrieve
+          schema:
+            type: number
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PharmaciesSearchResult'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /v1/relations:
+    get:
+      tags:
+        - Relations
+      summary: List user relation
+      description: Relations are based on JWT token passed in the query
+      operationId: getRelations
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListRelationsResult'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/profiles/{ssin}:
+    get:
+      tags:
+        - Relations
+      summary: List user relation / profiles
+      description: TEMPORARY ENDPOINT!! To be used before switch to /relations because of implementation error.
+      operationId: getProfiles
+      parameters:
+        - name: ssin
+          in: path
+          description: SSIN of the user
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListRelationsResult'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/mandateType:
+    get:
+      tags:
+        - Relations
+      summary: Get the type of mandate of the JWT token
+      description: Endpoint to distinguish JWT token of type mandator (GMH / PMH)
+      operationId: mandateType
+      parameters:
+        - name: ssin
+          in: query
+          description: SSIN of a patient
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: If provided token is a mandator one, we will get an answer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MandateTypeResult'
+        400:
+          description: When the SSIN / JWT token is missing in the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: "When an issue occurred on the token itself. <br /> See explanations\
+            \ on :\n  - https://www.gcloud.belgium.be/rest/#invalid-access-token\n\
+            \  - https://www.gcloud.belgium.be/rest/#expired-access-token \n"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        403:
+          description: |
+            Not a mandator token <br /> (explanation : https://www.gcloud.belgium.be/rest/#missing-permission )
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a
+            safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /v1/diarynotes:
+    get:
+      tags:
+        - DiaryNotes
+      summary: List user diarynotes
+      description: Diary notes based on the SSINs passed in parameters
+      operationId: getDiaryNotes
+      parameters:
+        - name: ssin
+          in: query
+          description: SSIN of the patients to get notes of
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListDiaryNotesResult'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - DiaryNotes
+      summary: Create a new diary note
+      description: Create a new diary note
+      operationId: createDiaryNote
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - diaryNote
+              properties:
+                diaryNote:
+                  $ref: '#/components/schemas/CreateDiaryNoteRequest'
+                attachments:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        201:
+          description: DiaryNote was created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiaryNote'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/mydiarynotes:
+    get:
+      tags:
+        - DiaryNotes
+      summary: List user diarynotes
+      description: Diary notes based on passed SSIN; which should be the user's SSIN if used
+      operationId: getMyDiaryNotes
+      parameters:
+        - name: ssin
+          in: query
+          description: SSIN of the patients to get notes of if different than the logged in user (caregiver only)
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListDiaryNotesResult'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /v1/diarynotes/{id} :
+    get:
+      tags:
+        - DiaryNotes
+      summary: Get a single diary note and its attachments based on its id, version, source and patient
+      operationId: getDiaryNote
+      parameters:
+        - name: id
+          in: path
+          description: ID of the diary note to get
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: query
+          description: Version of the diary note to get if applicable
+          required: false
+          schema:
+            type: integer
+        - name: source
+          in: query
+          description: Source Safe where the ID comes from.
+          required: true
+          schema:
+            $ref: '#/components/schemas/DiaryNoteSource'
+        - name: patientSsin
+          in: query
+          description: The note's patient SSIN
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiaryNoteWithAttachments'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: 'No DiaryNote for this ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - DiaryNotes
+      summary: Edit an existing diary note
+      description: Edit an existing diary note based on its id, version, source and patient
+      operationId: editDiaryNote
+      parameters:
+        - name: id
+          in: path
+          description: ID of the diary note to edit
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: query
+          description: Version of the diary note to get if applicable
+          required: false
+          schema:
+            type: integer
+        - name: source
+          in: query
+          description: Source Safe where the ID comes from.
+          required: true
+          schema:
+            $ref: '#/components/schemas/DiaryNoteSource'
+        - name: patientSsin
+          in: query
+          description: The note's patient SSIN
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - diaryNote
+              properties:
+                diaryNote:
+                  $ref: '#/components/schemas/EditDiaryNoteRequest'
+                attachments:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        200:
+          description: Content is different - Diarynote was updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiaryNoteWithAttachments'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: 'No DiaryNote for this ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - DiaryNotes
+      summary: Deletes a single diary note based on its id, version, source and patient
+      operationId: deleteDiaryNote
+      parameters:
+        - name: id
+          in: path
+          description: ID of the diary note to get
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: query
+          description: Version of the diary note to get if applicable
+          required: false
+          schema:
+            type: integer
+        - name: source
+          in: query
+          description: Source Safe where the ID comes from.
+          required: true
+          schema:
+            $ref: '#/components/schemas/DiaryNoteSource'
+        - name: patientSsin
+          in: query
+          description: The note's patient SSIN
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: No content - Diarynote was deleted
+        200:
+          description: Content is different - Diarynote was updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiaryNoteWithAttachments'
+        500:
+          description: 'Internal server error. ie: Error contacting a source or a safe.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: 'No DiaryNote for this ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    SuccessfulOperation:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    Error:
+      required:
+        - code
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        additionalIdentifier:
+          type: string
+    TranslatedField:
+      required:
+        - value
+      type: object
+      properties:
+        lang:
+          type: string
+        value:
+          type: string
+    Address:
+      required:
+        - city
+      type: object
+      properties:
+        lang:
+          type: string
+        street:
+          type: string
+        houseNumber:
+          type: string
+        zipCode:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+    Person:
+      required:
+        - fullname
+        - ssin
+      type: object
+      properties:
+        ssin:
+          type: string
+        fullname:
+          type: string
+    Practitioner:
+      required:
+        - fullname
+        - nihdi
+      type: object
+      properties:
+        nihdi:
+          type: string
+        fullname:
+          type: string
+    Medication:
+      required:
+        - compound
+      type: object
+      properties:
+        name:
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedField'
+        quantity:
+          type: object
+          required:
+            - value
+          properties:
+            value:
+              type: number
+            unit:
+              type: string
+              description: Code KMEHR
+        compound:
+          type: boolean
+        size:
+          description: "Represents the size of the package of the compound medicine"
+          type: object
+          required:
+            - value
+          properties:
+            value:
+              type: number
+            unit:
+              type: string
+              description: Code KMEHR
+        galenicForm:
+          type: object
+          properties:
+            code:
+              type: string
+              description: "https://www.ehealth.fgov.be/standards/kmehr/en/tables/galenic-forms-for-magistral-preparations"
+            text:
+              type: array
+              description: Galenic form in a freetext form
+              items:
+                $ref: '#/components/schemas/TranslatedField'
+        ingredients:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TranslatedField'
+              leaflet:
+                type: array
+                description: URL to a PDF or webpage
+                items:
+                  $ref: '#/components/schemas/TranslatedField'
+              value:
+                type: number
+              prefix:
+                type: string
+                description: Latin prefix to be placed before unit
+              unit:
+                type: string
+                description: Code KMEHR
+            example: Codeine phosphate 1/5
+        treatmentStartDate:
+          type: string
+          description: Date and time of the start of treatment for this medication
+          format: date-time
+          example: 2017-07-21T17:32:28+02:00
+        treatmentEndDate:
+          type: string
+          description: Date and time of the end of treatment for this medication
+          format: date-time
+          example: 2017-07-21T17:32:28+02:00
+        posology:
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedField'
+        regimenPosology:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegimenPosology'
+        treatmentDuration:
+          $ref: '#/components/schemas/Duration'
+        instructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedField'
+        leaflet:
+          type: array
+          description: URL to a PDF or webpage
+          items:
+            $ref: '#/components/schemas/TranslatedField'
+    Pharmacy:
+      required:
+        - name
+        - nihdi
+      type: object
+      properties:
+        nihdi:
+          type: string
+        name:
+          type: array
+          items:
+            $ref: '#/components/schemas/TranslatedField'
+        address:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+    RegimenPosology:
+      type: object
+      required:
+        - quantity
+        - daytime
+      properties:
+        quantity:
+          type: object
+          required:
+            - value
+          properties:
+            value:
+              type: number
+            unit:
+              type: string
+        daytime:
+          type: object
+          properties:
+            time:
+              type: string
+              format: time
+              description: "null if any other property is provided"
+              example:
+                - "09:06:33.000Z"
+                - "09:06:33.000+02:00"
+            dayperiod:
+              type: string
+              description: "null if any other property is provided. https://www.ehealth.fgov.be/standards/kmehr/en/tables/dayperiod"
+        day:
+          type: object
+          properties:
+            daynumber:
+              type: integer
+              minimum: 1
+              description: "null if any other property is provided"
+            date:
+              type: string
+              format: date
+              description: "null if any other property is provided"
+              example: "2022-03-04"
+            weekday:
+              type: object
+              description: "null if any other property is provided"
+              properties:
+                day:
+                  type: string
+                  enum:
+                    - monday
+                    - tuesday
+                    - wednesday
+                    - thursday
+                    - friday
+                    - saturday
+                    - sunday
+                weeknumber:
+                  type: integer
+                  minimum: 1
+    Duration:
+      type: object
+      required:
+        - value
+        - unit
+      properties:
+        value:
+          type: number
+        unit:
+          type: string
+          description: Code KMEHR https://www.ehealth.fgov.be/standards/kmehr/en/tables/time-unit
+    Prescription:
+      required:
+        - ridCode
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+        patient:
+          $ref: '#/components/schemas/Person'
+        practitioner:
+          $ref: '#/components/schemas/Practitioner'
+        medications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Medication'
+        creationDate:
+          type: string
+          description: Date and time of the creation of the prescription
+          format: date-time
+          example: 2017-07-21T17:32:28+02:00
+        deliveryDate:
+          type: string
+          description: Date and time of the available delivery of the prescription
+          format: date-time
+          example: 2017-07-21T17:32:28+02:00
+        validityDate:
+          type: string
+          description: Date and time of the end of validity of the prescription
+          format: date-time
+          example: 2017-07-21T17:32:28+02:00
+        ridCode:
+          pattern: BEP0[A-Z0-9]{8}
+          type: string
+        visibility:
+          type: string
+          description: Either null, locked, or a string identifying the pharmacy
+        visibilityPharmacy:
+          $ref: '#/components/schemas/Pharmacy'
+        reservationPharmacy:
+          $ref: '#/components/schemas/Pharmacy'
+        reservationDate:
+          type: string
+          description: Date and time of the reservation
+          format: date-time
+          example: 2017-07-21T17:32:28+02:00
+    EditPrescriptionRequest:
+      required:
+        - ssin
+      type: object
+      properties:
+        visibility:
+          type: string
+          nullable: true
+          description: Can either be set to null, "locked" or a pharmacy NIHDI number
+          example: "52160165"
+        ssin:
+          type: string
+          description: SSIN of the patient of this prescription
+    DeletePrescriptionRequest:
+      required:
+        - ssin
+      type: object
+      properties:
+        reason:
+          type: string
+        ssin:
+          type: string
+          description: SSIN of the patient of this prescription
+    ReservationRequest:
+      required:
+        - pharmacyNihdi
+        - ssin
+      type: object
+      properties:
+        pharmacyNihdi:
+          type: string
+        emailAddress:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+        ssin:
+          type: string
+          description: SSIN of the patient of this prescription
+    DeleteReservationRequest:
+      required:
+        - ssin
+      type: object
+      properties:
+        ssin:
+          type: string
+          description: SSIN of the patient of this prescription
+    PharmaciesSearchResult:
+      required:
+        - items
+        - page
+        - totalPages
+      type: object
+      properties:
+        items:
+          type: array
+          description: Pharmacies retrieved based on the search criteria
+          items:
+            $ref: '#/components/schemas/Pharmacy'
+        page:
+          type: number
+        totalPages:
+          type: number
+    MandateType:
+      type: string
+      description: "Please note that the result is case-insensitive. Type of mandate\
+        \ : \n  * gmh : General Mandate Holder\n  * pmh : Prescription Mandate Holder\n\
+        \  * other : When the mandate isn't one of the previously listed (default\
+        \ value)\n"
+      enum:
+        - gmh
+        - pmh
+        - other
+    MandateTypeResult:
+      required:
+        - mandateType
+      type: object
+      properties:
+        mandateType:
+          $ref: '#/components/schemas/MandateType'
+    Relation:
+      required:
+        - person
+        - relationship
+      type: object
+      properties:
+        person:
+          $ref: '#/components/schemas/Person'
+        relationship:
+          type: string
+          enum:
+            - child
+            - mandator_gmh
+            - mandator_pmh
+            - mandator_other
+        endDate:
+          type: string
+          format: date-time
+    ListRelationsResult:
+      required:
+        - relations
+      type: object
+      properties:
+        relations:
+          type: array
+          description: Relations of the user
+          items:
+            $ref: '#/components/schemas/Relation'
+    DiaryNoteSubject:
+      type: object
+      required:
+        - ssin
+      properties:
+        ssin:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    Organization:
+      required:
+        - type
+      type: object
+      properties:
+        name:
+          type: string
+        nihdi:
+          type: string
+        type:
+          type: string
+    DiaryNoteStatus:
+      type: string
+      enum:
+        - completed
+        - deleted
+    DiaryNoteAuthor:
+      required:
+        - role
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        ssin:
+          type: string
+        nihdi:
+          type: string
+        organization:
+          $ref: '#/components/schemas/Organization'
+        role:
+          type: string
+          description: "Reference to a hc-party fhir coding https://www.ehealth.fgov.be/standards/fhir/CodeSystem/cd-hcparty"
+    DiaryNoteContentType:
+      type: string
+      enum:
+        - plaintext
+        - html
+    DiaryNoteLanguage:
+      type: string
+      enum:
+        - en
+        - nl
+        - fr
+        - de
+    DiaryNote:
+      required:
+        - id
+      description: "If there is no error, content, contentType and language are mandatory"
+      type: object
+      properties:
+        id:
+          type: string
+        error:
+          $ref: '#/components/schemas/Error'
+        creation:
+          type: string
+          format: date-time
+        language:
+          $ref: '#/components/schemas/DiaryNoteLanguage'
+        version:
+          type: integer
+        source:
+          $ref: '#/components/schemas/DiaryNoteSource'
+        status:
+          $ref: '#/components/schemas/DiaryNoteStatus'
+        author:
+          $ref: '#/components/schemas/DiaryNoteAuthor'
+        subject:
+          $ref: '#/components/schemas/DiaryNoteSubject'
+        content:
+          type: string
+        contentType:
+          $ref: '#/components/schemas/DiaryNoteContentType'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiaryNoteAttachmentSummary'
+        tags:
+          type: array
+          description: 'Available values at https://www.ehealth.fgov.be/standards/kmehr/en/tables/diary'
+          items:
+            type: string
+    DiaryNoteAttachmentSummary:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+        contentType:
+          type: string
+        fileSize:
+          type: integer
+    DiaryNoteAttachmentDetails:
+      required:
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+        contentType:
+          type: string
+        fileSize:
+          type: integer
+        url:
+          type: string
+          description: "Only present if there is no data"
+        data:
+          type: string
+          format: base64
+          description: "Base64 encoded byte array. Only present if there is no url"
+    ListDiaryNotesResult:
+      type: object
+      required:
+        - items
+        - errors
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiaryNote'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    DiaryNoteWithAttachments:
+      required:
+        - note
+      type: object
+      properties:
+        note:
+          $ref: '#/components/schemas/DiaryNote'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiaryNoteAttachmentDetails'
+    CreateDiaryNoteRequest:
+      type: object
+      required:
+        - content
+        - contentType
+        - language
+        - subject
+        - author
+      properties:
+        language:
+          $ref: '#/components/schemas/DiaryNoteLanguage'
+        content:
+          type: string
+        contentType:
+          $ref: '#/components/schemas/DiaryNoteContentType'
+        subject:
+          $ref: '#/components/schemas/DiaryNoteSubject'
+        author:
+          $ref: '#/components/schemas/DiaryNoteAuthor'
+    EditDiaryNoteRequest:
+      type: object
+      required:
+        - content
+        - contentType
+        - language
+      properties:
+        language:
+          $ref: '#/components/schemas/DiaryNoteLanguage'
+        content:
+          type: string
+        contentType:
+          $ref: '#/components/schemas/DiaryNoteContentType'
+        subject:
+          $ref: '#/components/schemas/DiaryNoteSubject'
+        author:
+          $ref: '#/components/schemas/DiaryNoteAuthor'
+    DiaryNoteSource:
+      type: string
+      enum:
+        - vitalink
+        - rsw
+        - rsb
