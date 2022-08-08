@@ -20,6 +20,16 @@ rps run dev
 rps build
 ```
 
+# Upgrade to Flutter 3
+
+The upgrade to Flutter 3 was not as easy as it looked like.
+
+While the effective upgrade was performed with a simple ```flutter upgrade```, the app was not working anymore on iOS.
+I looked for a solution for weeks, and Flutter finally released version 3.0.4 that fixed the issue.
+
+The other solution would have been to rollback to Flutter 2. 
+
+
 # Observations
 
 ## Design

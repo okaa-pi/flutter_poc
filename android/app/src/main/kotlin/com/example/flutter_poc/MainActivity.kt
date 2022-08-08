@@ -1,4 +1,4 @@
-package be.health.vidis
+package com.example.flutter_poc
 
 import io.flutter.embedding.android.FlutterActivity
 

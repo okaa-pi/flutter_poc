@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class PrescriptionsScreen extends StatefulWidget {
-  const PrescriptionsScreen({Key? key}) : super(key: key);
+class PrescriptionScreen extends StatefulWidget {
+  const PrescriptionScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => PrescriptionsScreenState();
+  State<StatefulWidget> createState() => PrescriptionScreenState();
 
 }
 
-class PrescriptionsScreenState extends State<PrescriptionsScreen> {
+class PrescriptionScreenState extends State<PrescriptionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

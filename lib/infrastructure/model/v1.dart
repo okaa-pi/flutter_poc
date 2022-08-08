@@ -1,5 +1,9 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:time_machine/time_machine.dart';
 
+part 'v1.g.dart';
+
+@JsonSerializable()
 class SuccessfulOperation {
   String? code;
   String? message;
@@ -8,8 +12,12 @@ class SuccessfulOperation {
     this.code,
     this.message
   });
+
+  factory SuccessfulOperation.fromJson(Map<String, dynamic> json) => _$SuccessfulOperationFromJson(json);
+
 }
 
+@JsonSerializable()
 class Error {
   String code;
   String? message;
@@ -22,6 +30,7 @@ class Error {
   });
 }
 
+@JsonSerializable()
 class TranslatedField {
   String value;
   String? lang;
@@ -190,4 +199,3 @@ class Prescription {
       this.reservationDate
   });
 }
-

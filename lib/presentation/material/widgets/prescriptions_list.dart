@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../screens/prescriptions_screen.dart';
+import '../screens/prescription_screen.dart';
 
 class PrescriptionsListPage extends StatelessWidget {
   const PrescriptionsListPage({Key? key}) : super(key: key);
 
   void _openPrescriptionsPage(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const PrescriptionsScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const PrescriptionScreen()));
   }
 
   // This widget is the root of your application.

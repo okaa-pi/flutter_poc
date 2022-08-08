@@ -1,9 +1,11 @@
+import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:vidis/presentation/cupertino/screens/main_screen.dart' as ios;
+import 'package:vidis/presentation/material/screens/main_screen.dart' as android;
 
-import 'presentation/material/screens/main_screen.dart';
 
 void main() {
   runApp(const VidisApp());
@@ -14,10 +16,11 @@ class VidisApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    developer.log("Coucou -> ${Platform.isIOS}");
     if(Platform.isIOS) {
       return const CupertinoApp(
         title: 'My medicines',
-        home: Text('Hello')
+        home: ios.MainScreen(),
       );
     }
     else {
@@ -27,7 +30,7 @@ class VidisApp extends StatelessWidget {
             primarySwatch: Colors.blue,
             colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
         ),
-        home: const MainScreen(),
+        home: const android.MainScreen(),
       );
     }
   }
