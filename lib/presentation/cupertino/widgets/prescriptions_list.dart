@@ -14,7 +14,7 @@ class PrescriptionsListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
-        middle: Text("Prescriptions")
+        middle: Text("Prescriptions", style: TextStyle(fontWeight: FontWeight.bold))
       ),
       child: SafeArea(
           child: Center(

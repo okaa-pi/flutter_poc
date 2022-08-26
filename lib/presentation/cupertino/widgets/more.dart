@@ -8,7 +8,7 @@ class MorePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text("More"),
+          middle: Text("More", style: TextStyle(fontWeight: FontWeight.bold)),
         ),
         child: Text("More")
     );

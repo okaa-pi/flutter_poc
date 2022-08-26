@@ -8,7 +8,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text("Home"),
+          leading: Image(image: AssetImage('assets/logo.png')),
+          middle: Text("Home", style: TextStyle(fontWeight: FontWeight.bold)),
         ),
         child: Text("Home")
     );

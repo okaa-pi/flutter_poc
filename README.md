@@ -80,20 +80,34 @@ Another popular choice is also [`chopper`](https://pub.dev/packages/chopper),
 
 While they both seem interesting, `dio` is far more popular, so we'll stick with this one.
 
+### JSON serialization
 A point that I consider very annoying as far as HTTP clients goes is that, since flutter disables introspection for performance reasons, 
 it can't automatically unmarshall json to an object type.
 
 You'll have to provide a json-to-your-object function for each object type of your model. The implementation is trivial, but doing so for every class is pretty annoying.
 
+There are code-generation library, that generates the implementation of the mapping (a bit like MapStruct in Java), you can find more information about it in the official documentation: https://docs.flutter.dev/development/data-and-backend/json#serializing-json-using-code-generation-libraries
 
+For this project, I decided to use json-serializable. 
 
-## GetX
+This means that all of my model class had to be annotated with ``@JsonSerializable``, then I run the build-runner with ``flutter pub run build_runner build``, and then I write the factory method ``fromJson``:
 
-GetX seems to be a widely used general helpful tool when working with Flutter
+```dart
+@JsonSerializable()
+class SuccessfulOperation {
+  String? code;
+  String? message;
 
-https://pub.dev/packages/get
+  SuccessfulOperation({
+    this.code,
+    this.message
+  });
 
-It helps handle localization, theme, state management, routing, and dependency management.
+  factory SuccessfulOperation.fromJson(Map<String, dynamic> json) =>
+      _$SuccessfulOperationFromJson(json);
+
+}
+```
 
 ## Time Library
 
@@ -104,4 +118,80 @@ In its core package, Dart only have two classes to manage time:
 If you need more than that, you'll have to install a library, but they don't seem to be used very widely...
 
 I settled on time_machine.
+
+The JSON Serialization doesn't understand these types, so you have to provide a custom converter to it:
+
+```dart
+class LocalDateConverter implements JsonConverter<LocalDate?, String?> {
+  const LocalDateConverter();
+
+  @override
+  LocalDate? fromJson(String? json) => json == null ? null : LocalDatePattern.iso.parse(json).value;
+
+  @override
+  String? toJson(LocalDate? object) => object?.toString(LocalDatePattern.iso.patternText);
+}
+```
+
+# State Management
+
+An important part to understand with Flutter is the Declarative UI.
+
+For example, in Flutter it’s okay to rebuild parts of your UI from scratch instead of modifying it. Flutter is fast enough to do that, even on every frame if needed.
+
+Flutter is declarative. This means that Flutter builds its user interface to reflect the current state of your app. It can be summarized to:
+
+``UI = f(STATE)``
+
+To do that, Flutter differentiate two kind of states.
+
+There are a ton of state management solutions on Flutter. Most of which are listed on [this documentation page.](https://docs.flutter.dev/development/data-and-backend/state-mgmt/options)
+
+## Kind of states
+
+### The Ephemeral State
+
+This is basically something that is not worth serializing, like the current tab in a tabview or the state of a scrollview.
+
+This can easily be handled using StatefulWidget (as opposed to StatelessWidget) when building a widget.
+
+### The App State
+
+This is generally what defines your app as a whole. 
+
+The logged in user, the cart in a shopping app, the notifications in a social media, etc.
+
+## Redux
+
+While Redux is a popular solution amongst Web Developpers, it didn't the same attention by the Flutter users.
+
+[The package available on pubspec](https://pub.dev/packages/flutter_redux) only having 400 likes.
+
+## GetIt
+
+GetIt is more popular than Redux, and offers multiple advantages:
+
+- Extremely fast (O(1))
+- Easy to learn/use
+- Doesn't clutter your UI tree with special Widgets to access your data like provider or Redux does.
+
+## Provider
+
+Provider is one of the "Flutter Favorite" packages. 
+
+While [the package](https://pub.dev/packages/provider) has more than 7K likes, and seem to be an appropriate solution,
+the next one is even more interesting.
+
+## GetX
+
+As opposed to what the name might suggest, GetIt and GetX aren't related.
+
+GetX isn't only a state management library, as it is more of a "does-it-all" lib.
+
+The three pillars of GetX are:
+- State management
+- Route management
+- Dependency management
+
+[The package](https://pub.dev/packages/get) is very popular on pubspec with over 10K likes.
 

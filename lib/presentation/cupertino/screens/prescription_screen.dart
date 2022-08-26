@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:vidis/infrastructure/api/PrescriptionsApi.dart';
+import 'package:vidis/infrastructure/exceptions/ApiException.dart';
 import 'package:vidis/infrastructure/model/v1.dart';
 
 class PrescriptionScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class PrescriptionScreenState extends State<PrescriptionScreen> {
   @override
   void initState() {
     super.initState();
-    prescription = PrescriptionsApi().getPrescriptionFromRid('');
+    prescription = PrescriptionsApi().getPrescriptionFromRid('BEP04A4E4A2A2');
   }
 
   @override
@@ -32,7 +33,7 @@ class PrescriptionScreenState extends State<PrescriptionScreen> {
                   return Text('Prescription loaded : ${snapshot.data?.ridCode}');
                 }
                 else if (snapshot.hasError) {
-                  return ListView(children: [Text('Error :(\n${snapshot.error.toString()}')],);
+                  return ListView(children: [Text((snapshot.error as ApiException).cause.code)],);
                 }
                 return const CupertinoActivityIndicator();
               },

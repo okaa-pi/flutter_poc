@@ -1,8 +1,8 @@
-import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:vidis/presentation/cupertino/screens/main_screen.dart' as ios;
 import 'package:vidis/presentation/material/screens/main_screen.dart' as android;
 
@@ -16,15 +16,14 @@ class VidisApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    developer.log("Coucou -> ${Platform.isIOS}");
     if(Platform.isIOS) {
-      return const CupertinoApp(
+      return const GetCupertinoApp(
         title: 'My medicines',
         home: ios.MainScreen(),
       );
     }
     else {
-      return MaterialApp(
+      return GetMaterialApp(
         title: 'My medicines',
         theme: ThemeData(
             primarySwatch: Colors.blue,

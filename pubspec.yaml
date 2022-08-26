@@ -22,6 +22,7 @@ dependencies:
   dio: ^4.0.6
   time_machine: ^0.9.17
   json_annotation: ^4.0.1
+  get: ^4.6.5
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +35,10 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+  assets:
+    - 'assets/icons/icon.png'
+    - 'assets/logo.png'
 
   # To add assets to your application, add an assets section, like this:
   # assets:
