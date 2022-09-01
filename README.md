@@ -175,13 +175,6 @@ GetIt is more popular than Redux, and offers multiple advantages:
 - Easy to learn/use
 - Doesn't clutter your UI tree with special Widgets to access your data like provider or Redux does.
 
-## Provider
-
-Provider is one of the "Flutter Favorite" packages. 
-
-While [the package](https://pub.dev/packages/provider) has more than 7K likes, and seem to be an appropriate solution,
-the next one is even more interesting.
-
 ## GetX
 
 As opposed to what the name might suggest, GetIt and GetX aren't related.
@@ -195,3 +188,21 @@ The three pillars of GetX are:
 
 [The package](https://pub.dev/packages/get) is very popular on pubspec with over 10K likes.
 
+However, GetX used to heavily relies on Material components. 
+
+Because of this history, some elements, and particularly the route management don't work very well when using Cupertino (iOS) styling.
+
+UX-wise, Routing in Material doesn't rely on a context, each new page is "just" pushed on top of the existing one.
+
+But this is not the case on iOS, since, depending on the navigation used (deep navigation or modal), the pushed page
+shares elements with the existing page (the title, the back button, etc).
+
+## Provider
+
+Provider is one of the "Flutter Favorite" packages.
+
+[The package](https://pub.dev/packages/provider) has more than 7K likes, and seem to be an appropriate solution.
+
+This package is minimal, and is also the one used in the official documentation how-to.
+
+So this will be the preferred solution.
