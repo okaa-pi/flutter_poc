@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:vidis/infrastructure/api/PrescriptionsApi.dart';
-import 'package:vidis/infrastructure/exceptions/ApiException.dart';
+import 'package:vidis/infrastructure/api/prescriptions_api.dart';
+import 'package:vidis/infrastructure/exceptions/api_exception.dart';
 import 'package:vidis/infrastructure/model/v1.dart';
 
 class PrescriptionScreen extends StatefulWidget {

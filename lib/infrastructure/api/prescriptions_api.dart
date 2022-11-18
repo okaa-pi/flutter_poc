@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:vidis/infrastructure/constants.dart';
-import 'package:vidis/infrastructure/exceptions/ApiException.dart';
+import 'package:vidis/infrastructure/exceptions/api_exception.dart';
 import 'package:vidis/infrastructure/model/v1.dart';
 
 class PrescriptionsApi {

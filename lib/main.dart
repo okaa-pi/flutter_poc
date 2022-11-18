@@ -28,6 +28,10 @@ class VidisApp extends StatelessWidget {
             primarySwatch: Colors.blue,
             colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
         ),
+        darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            primarySwatch: Colors.blue
+        ),
         home: const android.MainScreen(),
       );
     }
