@@ -25,20 +25,14 @@ class HomePageState extends State<HomePage> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-        navigationBar: const CupertinoNavigationBar(
+    return const CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
           leading: Image(image: AssetImage('assets/logo.png')),
           middle: Text("Home", style: TextStyle(fontWeight: FontWeight.bold)),
         ),
         child: SafeArea(
-          child: ListView(
-              children: [
-                CupertinoButton.filled(
-                    child: const Text("Login"),
-                    onPressed: () => _openLoginFlow(context),
-                ),
-                Text(token?.tokenType ?? 'No token')
-            ]
+          child: Center(
+              child: Text('Home')
           )
         ),
     );

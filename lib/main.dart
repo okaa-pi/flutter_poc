@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:vidis/presentation/cupertino/screens/main_screen.dart' as ios;
+import 'package:vidis/presentation/cupertino/screens/login_screen.dart' as ios;
 import 'package:vidis/presentation/material/screens/main_screen.dart' as android;
 
 
@@ -18,7 +18,7 @@ class VidisApp extends StatelessWidget {
     if(Platform.isIOS) {
       return const CupertinoApp(
         title: 'My medicines',
-        home: ios.MainScreen(),
+        home: ios.LoginScreen(),
       );
     }
     else {
